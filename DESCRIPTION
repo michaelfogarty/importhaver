@@ -1,17 +1,15 @@
 Package: importhaver
-Title: Michael's Personal Helper Functions
+Title: Tidyly import data from a Haver database
 Version: 0.1.1
 Date: 2019-07-15
 Authors@R: person("Michael", "Fogarty", email = "mfogarty@frbchi.org",
                   role = c("aut", "cre"))
-Description: Some convenience functions. The first version contains a helper function to import data from Haver in a convenient (tibble) format
+Description: Some convenience functions. The first version contains a helper function to import data from Haver in a convenient (tibble) format.
 Depends: R(>= 3.1.0)
 Imports:
   Haver,
   lubridate,
-  magrittr,
   assertthat,
-  purrr,
   stringr,
   dplyr,
   tibble

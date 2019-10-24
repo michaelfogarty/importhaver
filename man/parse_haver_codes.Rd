@@ -2,19 +2,21 @@
 % Please edit documentation in R/parse_haver_codes.R
 \name{parse_haver_codes}
 \alias{parse_haver_codes}
-\title{Wrapper function around \code{Haver::haver.data} that returns a tibble with the dates in Date format and each series as a column.}
+\title{This function parses haver codes of the format
+code{SERIES@DATABASE} and converts them to the format \code{database:series}}
 \usage{
 parse_haver_codes(series)
 }
 \arguments{
-\item{series}{The series (in database:series or SERIES@DATABASE format) that you wish to pull from Haver.}
+\item{series}{A series name to parse into the proper format}
 }
 \value{
-A character vector of Haver codes in the format database:
+A character vector of Haver codes in the format "database:series"
 }
 \description{
-Wrapper function around \code{Haver::haver.data} that returns a tibble with the dates in Date format and each series as a column.
+This function parses haver codes of the format
+code{SERIES@DATABASE} and converts them to the format \code{database:series}
 }
 \examples{
-parse_haver_codes('GDP@USECON')
+parse_haver_codes("GDP@USECON")
 }
