@@ -21,5 +21,5 @@ Wrapper function around \code{Haver::haver.data} that returns a tibble with
 the dates in Date format and each series as a column.
 }
 \examples{
-import_haver(c('usecon:gdp', 'usecon:c'))
+import_haver(c("usecon:gdp", "usecon:c"))
 }
