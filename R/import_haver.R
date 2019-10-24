@@ -10,8 +10,7 @@
 #' @export
 #'
 #' @examples
-#' import_haver(c('usecon:gdp', 'usecon:c'))
-
+#' import_haver(c("usecon:gdp", "usecon:c"))
 import_haver <- function(series, ...) {
 
   ## check inputs
@@ -39,17 +38,18 @@ import_haver <- function(series, ...) {
   assertthat::assert_that(is.character(dat$date))
 
   ## convert character date column into a date type based on freq
-  assertthat::assert_that(freq %in% c("annual", "quarterly", "monthly",
-                                      "weekly", "daily"))
+  assertthat::assert_that(freq %in% c(
+    "annual", "quarterly", "monthly",
+    "weekly", "daily"
+  ))
 
   if (freq == "quarterly") {
     dplyr::mutate(dat, date = lubridate::yq(date))
   } else if (freq == "monthly") {
-      dplyr::mutate(dat, date = lubridate::ymd(paste0(date, "-01")))
+    dplyr::mutate(dat, date = lubridate::ymd(paste0(date, "-01")))
   } else if (freq == "annual") {
-      dplyr::mutate(dat, date = lubridate::ymd(paste0(date, "-1-01")))
+    dplyr::mutate(dat, date = lubridate::ymd(paste0(date, "-1-01")))
   } else {
-      dplyr::mutate(dat, date = lubridate::ymd(date))
+    dplyr::mutate(dat, date = lubridate::ymd(date))
   }
-
 }

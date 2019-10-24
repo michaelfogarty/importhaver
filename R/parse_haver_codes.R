@@ -6,21 +6,20 @@
 #' @export
 #' @examples
 #' parse_haver_codes("GDP@USECON")
-
 parse_haver_codes <- function(series) {
-
   parser <- function(series) {
 
     ## check inputs
     assertthat::assert_that(is.character(series))
 
     assertthat::assert_that(all(stringr::str_detect(series, "(@|:)")),
-                            msg = "No series/database separator")
+      msg = "No series/database separator"
+    )
     assertthat::assert_that(all(stringr::str_count(series, "(@|:)") == 1),
-                            msg = "multiple separators detected")
+      msg = "multiple separators detected"
+    )
 
     if (stringr::str_detect(series, "@")) {
-
       s_1 <- stringr::str_to_lower(series)
       s_2 <- stringr::str_split(s_1, "@")
       s_3 <- s_2[[1]]
@@ -30,7 +29,6 @@ parse_haver_codes <- function(series) {
       out_series <- stringr::str_c(s_3[[2]], ":", s_3[[1]])
 
       return(out_series)
-
     } else if (stringr::str_detect(series, ":")) {
       out_series <- stringr::str_to_lower(series)
       return(out_series)
@@ -39,5 +37,4 @@ parse_haver_codes <- function(series) {
 
   parser <- Vectorize(parser, USE.NAMES = FALSE)
   parser(series)
-
 }
