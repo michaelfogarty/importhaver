@@ -15,8 +15,20 @@ To install the package from Gitlab, use the `install_git` function from
 `devtools`. You will also need to authenticate your SSH credentials.
 
 ```r
-creds <- git2r::cred_ssh_key(private = "C:/Users/G1/.ssh/id_rsa", 
+creds <- git2r::cred_ssh_key(private = "C:/Users/<your-g1-here>/.ssh/id_rsa", 
                              passphrase = rstudioapi::askForPassword())
 url <- "git@gitlab1.economic.research:r-tools/importhaver.git"
 devtools::install_git(url, credentials = creds)
+```
+
+Alternatively, you can use username/password authentication (I'm currently
+having issues with the SSH version)
+
+```r
+creds <- git2r::cred_user_pass(rstudioapi::askForPassword("username"),
+                               rstudioapi::askForPassword("Password"))
+devtools::install_git(
+    "https://gitlab1.economic.research/r-tools/importhaver.git",
+    credentials = creds,
+    upgrade = FALSE)
 ```
