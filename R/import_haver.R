@@ -16,19 +16,17 @@ import_haver <- function(series, ...) {
   ## check inputs
   assertthat::assert_that(is.character(series))
 
-
   ## convert haver code format if necessary
-
   series <- importhaver::parse_haver_codes(series)
 
   ## pull in data from haver
-  Haver::haver.path("auto")
-  dat <- Haver::haver.data(series, ...)
+  suppressMessages(Haver::haver.path("auto"))
+  dat <- Haver::haver.data(codes = series,
+                           ...,
+                           limits = FALSE)
 
   ## check attributes of haver.data object
   assertthat::has_attr(dat, "frequency")
-  assertthat::has_attr(dat, "metadata")
-  assertthat::has_attr(dat, "dimnames")
 
   ## pull useful info from the haver object:
   freq <- attr(dat, "frequency")
@@ -39,8 +37,7 @@ import_haver <- function(series, ...) {
 
   ## convert character date column into a date type based on freq
   assertthat::assert_that(freq %in% c(
-    "annual", "quarterly", "monthly",
-    "weekly", "daily"
+    "annual", "quarterly", "monthly", "weekly", "daily"
   ))
 
   if (freq == "quarterly") {
