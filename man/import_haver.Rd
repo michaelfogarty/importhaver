@@ -5,13 +5,17 @@
 \title{Wrapper function around \code{Haver::haver.data} that returns a tibble with
 the dates in Date format and each series as a column.}
 \usage{
-import_haver(series, ...)
+import_haver(series, eop = TRUE, ...)
 }
 \arguments{
 \item{series}{The series (in database:series or SERIES@DATABASE format) that
 you wish to pull from Haver.}
 
-\item{...}{Additional arguments to be passed to \code{haver.data}.}
+\item{eop}{Logical (TRUE/FALSE) whether to use end of period dates for annual,
+quarterly, and monthly series. Defaults to TRUE.}
+
+\item{...}{Additional arguments to be passed to \code{haver.data}. The most 
+useful are \code{start} and \code{end}.}
 }
 \value{
 A \code{tibble} with a date column and a column for each series.

@@ -38,3 +38,4 @@ parse_haver_codes <- function(series) {
   parser <- Vectorize(parser, USE.NAMES = FALSE)
   parser(series)
 }
+
