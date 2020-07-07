@@ -18,25 +18,27 @@ Analytics. To install the package, run the following line of code:
 install.packages("Haver", repos="http://www.haver.com/r/", type="win.binary")
 ```
 
-To install the package from Gitlab, use the `install_git` function from 
-`devtools`. You will also need to authenticate your SSH credentials.
+To install the package from Gitlab, use the `install_gitlab` function from the
+`devtools` package. You will also need to create a personal access token on Gitlab.
 
 ```r
-user <- Sys.info()["user"]
-creds <- git2r::cred_ssh_key(private = paste0("C:/Users/", user, "/.ssh/id_rsa"), 
-                             passphrase = rstudioapi::askForPassword())
-url <- "git@gitlab1.economic.research:r-tools/importhaver.git"
-devtools::install_git(url, credentials = creds)
-```
-
-Alternatively, you can use username/password authentication (I'm currently
-having issues with the SSH version)
-
-```r
-creds <- git2r::cred_user_pass(Sys.info()["user"],
-                               rstudioapi::askForPassword("Password"))
-devtools::install_git(
-  url = "https://gitlab1.economic.research/r-tools/importhaver.git",
-  credentials = creds
+options("download.file.method"='libcurl')
+devtools::install_gitlab(
+  repo = "r-tools/importhaver",
+  auth_token = keyring::key_get("gitlab-token"),
+  host = "gitlab1.economic.research",
+  quiet = FALSE,
+  force = TRUE
 )
 ```
+
+See the accepted answer [here](https://stackoverflow.com/questions/59838094/installing-a-package-from-private-gitlab-server-on-windows)
+ for more information.
+
+#### Gitlab Personal Access Token
+
+To install the package from gitlab, you need to create a personal access token. Navigate to [https://gitlab1.economic.research/profile/personal_access_tokens](https://gitlab1.economic.research/profile/personal_access_tokens) 
+and create a token with api access. Leaving the date field blank makes sure it does not expire. 
+
+I recommend using the `keyring` package to securly store your personal access 
+token in the system credential manager.
