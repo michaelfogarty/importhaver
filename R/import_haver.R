@@ -3,7 +3,10 @@
 #'
 #' @param series The series (in database:series or SERIES@DATABASE format) that
 #' you wish to pull from Haver.
-#' @param ... Additional arguments to be passed to \code{haver.data}.
+#' @param eop Logical (TRUE/FALSE) whether to use end of period dates for annual,
+#' quarterly, and monthly series. Defaults to TRUE.
+#' @param ... Additional arguments to be passed to \code{haver.data}. The most 
+#' useful are \code{start} and \code{end}.
 #'
 #' @return A \code{tibble} with a date column and a column for each series.
 #'
@@ -11,42 +14,53 @@
 #'
 #' @examples
 #' import_haver(c("usecon:gdp", "usecon:c"))
-import_haver <- function(series, ...) {
+import_haver <- function(series, eop = TRUE, ...) {
 
   ## check inputs
   assertthat::assert_that(is.character(series))
 
   ## convert haver code format if necessary
   series <- importhaver::parse_haver_codes(series)
-
-  ## pull in data from haver
+  
+  
   suppressMessages(Haver::haver.path("auto"))
-  dat <- Haver::haver.data(codes = series,
-                           ...,
-                           limits = FALSE)
-
-  ## check attributes of haver.data object
-  assertthat::has_attr(dat, "frequency")
-
-  ## pull useful info from the haver object:
-  freq <- attr(dat, "frequency")
-
-  ## extract data from atomic vector/matrix into a tibble
-  dat <- tibble::as_tibble(dat, rownames = "date")
+  
+  # Get metadata
+  metadata <- Haver::haver.metadata(series)
+  
+  # Error out if metadata query fails
+  if ("HaverErrorReport" %in% class(metadata)) {
+    
+    bad_codes <- metadata[["codes.notfound"]]
+    
+    stop(paste("Haver query failed. The folowing codes could not be found:",
+                bad_codes))
+  }
+  
+  freq <- metadata$frequency
+ 
+  ## pull in data from haver 
+  if (freq %in% c("A", "Q", "M")) {
+    haver_data <-
+      Haver::haver.data(
+        codes = series,
+        limits = FALSE,
+        eop.dates = eop,
+        ...
+      )
+  } else if (freq %in% c("W", "D")) {
+    haver_data <-
+      Haver::haver.data(
+        codes = series,
+        limits = FALSE,
+        ...
+      )
+  }
+  
+  ## extract data from HaverData into a tibble
+  dat <- tibble::as_tibble(haver_data, rownames = "date")
   assertthat::assert_that(is.character(dat$date))
 
-  ## convert character date column into a date type based on freq
-  assertthat::assert_that(freq %in% c(
-    "annual", "quarterly", "monthly", "weekly", "daily"
-  ))
-
-  if (freq == "quarterly") {
-    dplyr::mutate(dat, date = lubridate::yq(date))
-  } else if (freq == "monthly") {
-    dplyr::mutate(dat, date = lubridate::ymd(paste0(date, "-01")))
-  } else if (freq == "annual") {
-    dplyr::mutate(dat, date = lubridate::ymd(paste0(date, "-1-01")))
-  } else {
-    dplyr::mutate(dat, date = lubridate::ymd(date))
-  }
+  # convert to date
+  dplyr::mutate(dat, date = lubridate::ymd(date))
 }
