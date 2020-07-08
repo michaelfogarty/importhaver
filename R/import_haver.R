@@ -18,6 +18,7 @@ import_haver <- function(series, eop = TRUE, ...) {
 
   ## check inputs
   assertthat::assert_that(is.character(series))
+  assertthat::assert_that(is.logical(eop))
 
   ## convert haver code format if necessary
   series <- importhaver::parse_haver_codes(series)
@@ -62,5 +63,14 @@ import_haver <- function(series, eop = TRUE, ...) {
   assertthat::assert_that(is.character(dat$date))
 
   # convert to date
-  dplyr::mutate(dat, date = lubridate::ymd(date))
+  if (freq %in% c("W", "D") | eop) {
+    dplyr::mutate(dat, date = lubridate::ymd(date))
+  } else if (!eop & freq == "Q") {
+    dplyr::mutate(dat, date = lubridate::yq(date))
+  } else if (!eop & freq == "A") {
+    dplyr::mutate(dat, date = lubridate::ymd(date, truncated = 2L))
+  } else if (!eop & freq == "M") {
+    dplyr::mutate(dat, date = lubridate::ymd(date, truncated = 1L))
+  }
+
 }
