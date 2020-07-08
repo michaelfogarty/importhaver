@@ -38,7 +38,12 @@ import_haver <- function(series, eop = TRUE, ...) {
                 bad_codes))
   }
   
+  # series frequency
   freq <- metadata$frequency
+  assertthat::assert_that(length(unique(freq)) == 1,
+                          msg = "Series have multiple frequencies")
+  
+  freq <- unique(freq)
  
   ## pull in data from haver 
   if (freq %in% c("A", "Q", "M")) {
