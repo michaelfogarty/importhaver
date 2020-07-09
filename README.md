@@ -41,4 +41,9 @@ To install the package from gitlab, you need to create a personal access token. 
 and create a token with api access. Leaving the date field blank makes sure it does not expire. 
 
 I recommend using the `keyring` package to securly store your personal access 
-token in the system credential manager.
+token in the system credential manager. To save the token, run the following line of code:
+
+```r
+keyring::key_set(service = "gitlab-token")
+```
+You will then be prompted to paste in the token string.
