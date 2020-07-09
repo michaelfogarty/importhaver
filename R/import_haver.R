@@ -64,7 +64,7 @@ import_haver <- function(series, eop = TRUE, ...) {
   }
   
   ## extract data from HaverData into a tibble
-  dat <- tibble::as_tibble(haver_data, rownames = "date")
+  dat <- tibble::as_tibble(as.data.frame(haver_data), rownames = "date")
   assertthat::assert_that(is.character(dat$date))
 
   # convert to date
