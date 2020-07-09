@@ -118,5 +118,5 @@ test_that("Daily data pulls properly", {
 })
 
 test_that("Mixed frequencies fail", {
-  expect_error(import_haver(series = c("FFED@DAILY", "FFED@WEEKLY")))
+  expect_error(import_haver(series = c("LR@USECON", "FFED@WEEKLY")))
 })
