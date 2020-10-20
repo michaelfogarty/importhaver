@@ -1,6 +1,6 @@
 Package: importhaver
 Title: Tidyly import data from a Haver database
-Version: 0.1.2
+Version: 0.1.2.1
 Date: 2019-07-15
 Authors@R: person("Michael", "Fogarty", email = "mfogarty@frbchi.org",
                   role = c("aut", "cre"))
