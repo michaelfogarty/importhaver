@@ -2,7 +2,9 @@
 #' the dates in Date format and each series as a column.
 #'
 #' @param series The series (in database:series or SERIES@DATABASE format) that
-#' you wish to pull from Haver.
+#' you wish to pull from Haver. Optionally, you can pass series names that
+#' differ from the Haver mnemonics as names for the character vector for Haver 
+#' codes.
 #' @param eop Logical (TRUE/FALSE) whether to use end of period dates for annual,
 #' quarterly, and monthly series. Defaults to TRUE.
 #' @param ... Additional arguments to be passed to \code{haver.data}. The most 
@@ -21,6 +23,7 @@ import_haver <- function(series, eop = TRUE, ...) {
   assertthat::assert_that(is.logical(eop))
 
   ## convert haver code format if necessary
+  names <- names(series)
   series <- importhaver::parse_haver_codes(series)
   
   
@@ -66,6 +69,15 @@ import_haver <- function(series, eop = TRUE, ...) {
   ## extract data from HaverData into a tibble
   dat <- tibble::as_tibble(as.data.frame(haver_data), rownames = "date")
   assertthat::assert_that(is.character(dat$date))
+  
+  ## replace mnemonics with series names passed as a named vector
+  if (!is.null(names)) {
+    names <- c("date", names)
+    names_clean <- make.names(names)
+    # only replace names that are not blank
+    colnames(dat)[!grepl(pattern = "^$", x =names)] <-
+      names_clean[!grepl(pattern = "^$", x =names)]
+  }
 
   # convert to date
   if (freq %in% c("W", "D") | eop) {

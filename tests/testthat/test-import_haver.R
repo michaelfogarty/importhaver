@@ -120,3 +120,34 @@ test_that("Daily data pulls properly", {
 test_that("Mixed frequencies fail", {
   expect_error(import_haver(series = c("LR@USECON", "FFED@WEEKLY")))
 })
+
+test_that("Setting variable names from named vector", {
+  
+  start_date <- lubridate::ymd("2015-01-01")
+  end_date <- lubridate::ymd("2019-12-31")
+  
+  # Create test datasets
+  names_all <-
+    import_haver(
+      series = c(hours = "LITPRIVA@USECON", payroll = "LGTPRIVA@USECON"),
+      start = start_date, end = end_date
+    )
+  
+  names_some <-
+    import_haver(
+      series = c(hours = "LITPRIVA@USECON","LGTPRIVA@USECON"),
+      start = start_date, end = end_date
+    )
+  
+  # Test equivalence
+  expect_equal(
+    names_all,
+    read.csv("../testdata/names_all.csv", colClasses = c("Date", "double", "double"))
+  )
+  
+  expect_equal(
+    names_some,
+    read.csv("../testdata/names_some.csv", colClasses = c("Date", "double", "double"))
+  )
+  
+})
