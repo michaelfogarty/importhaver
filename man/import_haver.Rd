@@ -9,7 +9,9 @@ import_haver(series, eop = TRUE, ...)
 }
 \arguments{
 \item{series}{The series (in database:series or SERIES@DATABASE format) that
-you wish to pull from Haver.}
+you wish to pull from Haver. Optionally, you can pass series names that
+differ from the Haver mnemonics as names for the character vector for Haver 
+codes.}
 
 \item{eop}{Logical (TRUE/FALSE) whether to use end of period dates for annual,
 quarterly, and monthly series. Defaults to TRUE.}

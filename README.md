@@ -18,32 +18,84 @@ Analytics. To install the package, run the following line of code:
 install.packages("Haver", repos="http://www.haver.com/r/", type="win.binary")
 ```
 
-To install the package from Gitlab, use the `install_gitlab` function from the
-`devtools` package. You will also need to create a personal access token on Gitlab.
+After installing the `Haver` package, you can use `devtools` to install `importhaver` from the Gitlab sever:
 
 ```r
-options("download.file.method"='libcurl')
-devtools::install_gitlab(
-  repo = "r-tools/importhaver",
-  auth_token = keyring::key_get("gitlab-token"),
-  host = "gitlab1.economic.research",
-  quiet = FALSE,
-  force = TRUE
-)
+devtools::install_gitlab(host = "gitlab1.economic.research", repo ="r-tools/importhaver")
 ```
 
-See the accepted answer [here](https://stackoverflow.com/questions/59838094/installing-a-package-from-private-gitlab-server-on-windows)
- for more information.
+## Usage
 
-#### Gitlab Personal Access Token
-
-To install the package from gitlab, you need to create a personal access token. Navigate to [https://gitlab1.economic.research/profile/personal_access_tokens](https://gitlab1.economic.research/profile/personal_access_tokens) 
-and create a token with api access. Leaving the date field blank makes sure it does not expire. 
-
-I recommend using the `keyring` package to securly store your personal access 
-token in the system credential manager. To save the token, run the following line of code:
+To import a series, you must pass a (optionally named) character vector of Haver series codes.
 
 ```r
-keyring::key_set(service = "gitlab-token")
+import_haver(series = c("GDPH@USECON"))
+
+# A tibble: 295 x 2
+   date        gdph
+   <date>     <dbl>
+ 1 1947-03-31 2033.
+ 2 1947-06-30 2028.
+ 3 1947-09-30 2024.
+ 4 1947-12-31 2055.
+ 5 1948-03-31 2086 
+ 6 1948-06-30 2120.
+ 7 1948-09-30 2133.
+ 8 1948-12-31 2135 
+ 9 1949-03-31 2106.
+10 1949-06-30 2098.
+# ... with 285 more rows
 ```
-You will then be prompted to paste in the token string.
+
+```r
+import_haver(series = c(real_gdp = "GDPH@USECON"))
+
+# A tibble: 295 x 2
+   date       real_gdp
+   <date>        <dbl>
+ 1 1947-03-31    2033.
+ 2 1947-06-30    2028.
+ 3 1947-09-30    2024.
+ 4 1947-12-31    2055.
+ 5 1948-03-31    2086 
+ 6 1948-06-30    2120.
+ 7 1948-09-30    2133.
+ 8 1948-12-31    2135 
+ 9 1949-03-31    2106.
+10 1949-06-30    2098.
+# ... with 285 more rows
+```
+
+Series must have the same frequency; pulling two series with different frequencies will result in an error.
+
+```r
+import_haver(series = c("FFED@DAILY", "LR@USECON"))
+
+ Error: Series have multiple frequencies 
+```
+
+You can specify a specific timespan using the `start` and `end` parameters that get passed on to `Haver::haver.data`.
+
+```r
+import_haver(series = "LR@USECON", start = lubridate::ymd("2020-01-01"), end = lubridate::ymd("2020-10-01"))
+
+# A tibble: 10 x 2
+   date          lr
+   <date>     <dbl>
+ 1 2020-01-31   3.6
+ 2 2020-02-29   3.5
+ 3 2020-03-31   4.4
+ 4 2020-04-30  14.7
+ 5 2020-05-31  13.3
+ 6 2020-06-30  11.1
+ 7 2020-07-31  10.2
+ 8 2020-08-31   8.4
+ 9 2020-09-30   7.9
+10 2020-10-31   6.9
+```
+
+For monthly, quaterly, and annual data, you can specify whether you want to use end of period or start of period dates with the `eop` paramter; the default is `TRUE`. For start of period dates, set `eop = FALSE`.
+
+For more advanced toics, such as data aggregation and frequency, see `help("haver.data", package = "Haver")`
+
+
