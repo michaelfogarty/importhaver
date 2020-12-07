@@ -26,8 +26,8 @@ import_haver <- function(series, eop = TRUE, ...) {
   names <- names(series)
   series <- importhaver::parse_haver_codes(series)
   
-  
-  suppressMessages(Haver::haver.path("auto"))
+  # Check Haver directory existence
+  assertthat::assert_that(dir.exists(Haver::haver.path()))
   
   # Get metadata
   metadata <- Haver::haver.metadata(series)

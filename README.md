@@ -24,6 +24,22 @@ After installing the `Haver` package, you can use `devtools` to install `importh
 devtools::install_gitlab(host = "gitlab1.economic.research", repo ="r-tools/importhaver")
 ```
 
+## Setting your Haver Directory
+
+Finally, you also want to set up the default Haver directory so R knows where to look for the data.
+
+To do this, you want to edit your .Rprofile file that runs on startup.
+
+```r
+usethis::edit_r_profile()
+```
+
+Add the following line and save:
+
+```r
+.dlxdbpath = "R:/_appl/Haver/DATA/"
+```
+
 ## Usage
 
 To import a series, you must pass a (optionally named) character vector of Haver series codes.
