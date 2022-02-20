@@ -3,25 +3,25 @@
 ## About
 
 This package provides a function, `import_haver`, that is a wrapper around the
-`haver.data` function from the `Haver` package. `import_haver` always returns 
-data in a tibble with the dates as a variable, rather than a `ts` class object 
-or a named vector. `import_haver` also calls `parse_haver_codes` which allows 
-the user to supply haver series in the format SERIES@DATABASE, rather than the 
+`haver.data` function from the `Haver` package. `import_haver` always returns
+data in a tibble with the dates as a variable, rather than a `ts` class object
+or a named vector. `import_haver` also calls `parse_haver_codes` which allows
+the user to supply haver series in the format SERIES@DATABASE, rather than the
 database:series format required by the `Haver` package.
 
 ## Installation
 
-The main dependency of the package is the `Haver` package, published by Haver 
+The main dependency of the package is the `Haver` package, published by Haver
 Analytics. To install the package, run the following line of code:
 
 ```r
 install.packages("Haver", repos="http://www.haver.com/r/", type="win.binary")
 ```
 
-After installing the `Haver` package, you can use `devtools` to install `importhaver` from the Gitlab sever:
+After installing the `Haver` package, you can use `devtools` to install `importhaver`:
 
 ```r
-devtools::install_gitlab(host = "gitlab1.economic.research", repo ="r-tools/importhaver")
+devtools::install_github("michaelfogarty/importhaver")
 ```
 
 ## Setting your Haver Directory
@@ -37,7 +37,7 @@ usethis::edit_r_profile()
 Add the following line and save:
 
 ```r
-.dlxdbpath = "R:/_appl/Haver/DATA/"
+.dlxdbpath = "PATH/TO/Haver/DATA/"
 ```
 
 ## Usage
@@ -54,10 +54,10 @@ import_haver(series = c("GDPH@USECON"))
  2 1947-06-30 2028.
  3 1947-09-30 2024.
  4 1947-12-31 2055.
- 5 1948-03-31 2086 
+ 5 1948-03-31 2086
  6 1948-06-30 2120.
  7 1948-09-30 2133.
- 8 1948-12-31 2135 
+ 8 1948-12-31 2135
  9 1949-03-31 2106.
 10 1949-06-30 2098.
 # ... with 285 more rows
@@ -73,10 +73,10 @@ import_haver(series = c(real_gdp = "GDPH@USECON"))
  2 1947-06-30    2028.
  3 1947-09-30    2024.
  4 1947-12-31    2055.
- 5 1948-03-31    2086 
+ 5 1948-03-31    2086
  6 1948-06-30    2120.
  7 1948-09-30    2133.
- 8 1948-12-31    2135 
+ 8 1948-12-31    2135
  9 1949-03-31    2106.
 10 1949-06-30    2098.
 # ... with 285 more rows
@@ -87,7 +87,7 @@ Series must have the same frequency; pulling two series with different frequenci
 ```r
 import_haver(series = c("FFED@DAILY", "LR@USECON"))
 
- Error: Series have multiple frequencies 
+ Error: Series have multiple frequencies
 ```
 
 You can specify a specific timespan using the `start` and `end` parameters that get passed on to `Haver::haver.data`.
@@ -113,5 +113,3 @@ import_haver(series = "LR@USECON", start = lubridate::ymd("2020-01-01"), end = l
 For monthly, quaterly, and annual data, you can specify whether you want to use end of period or start of period dates with the `eop` paramter; the default is `TRUE`. For start of period dates, set `eop = FALSE`.
 
 For more advanced toics, such as data aggregation and frequency, see `help("haver.data", package = "Haver")`
-
-
